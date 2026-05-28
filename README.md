@@ -1,4 +1,4 @@
-# Auction Bot Detector
+# # xBot 🤖
 
 An end-to-end ML pipeline to detect auction bots
 using the Facebook Recruiting IV dataset from Kaggle.
