@@ -1,0 +1,58 @@
+services:
+
+  postgres:
+    image: postgres:13
+    container_name: xbot_postgres
+    environment:
+      POSTGRES_USER: xbot
+      POSTGRES_PASSWORD: xbot123
+      POSTGRES_DB: xbot_airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "xbot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - xbot_network
+
+  airflow:
+    image: apache/airflow:2.7.0
+    container_name: xbot_airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://xbot:xbot123@xbot_postgres/xbot_airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__WEBSERVER__SECRET_KEY: 'xbot_secret_key'
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./data:/opt/airflow/data
+      - ./models:/opt/airflow/models
+    ports:
+      - "8082:8080"
+    command: >
+      bash -c "airflow db init &&
+               airflow users create
+               --username admin
+               --password admin
+               --firstname xBot
+               --lastname Admin
+               --role Admin
+               --email admin@xbot.com &&
+               airflow webserver & airflow scheduler"
+    networks:
+      - xbot_network
+
+networks:
+  xbot_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
