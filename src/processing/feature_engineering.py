@@ -17,6 +17,8 @@ def engineer_features(df):
         mean_time_diff    = ("time", lambda x: x.sort_values().diff().mean())
     ).reset_index()
     
+    bidder_features["mean_time_diff"] = bidder_features["mean_time_diff"].fillna(0)
+    
     return bidder_features
 
 def attach_labels(bidder_features, train_df):
