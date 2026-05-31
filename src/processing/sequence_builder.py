@@ -48,11 +48,43 @@ def sort_by_time(df):
     print("Sorting complete.")
     return df
 
+def add_time_differences(df):
+    print("\nCalculating time differences...")
+    df = df.copy()
+    df["time_diff"] = df.groupby("bidder_id")["time"].diff()
+    df["time_diff"] = df["time_diff"].fillna(0)
+    print(f"time_diff min: {df['time_diff'].min()}")
+    print(f"time_diff max: {df['time_diff'].max()}")
+    print(f"time_diff mean: {df['time_diff'].mean():.2f}")
+    return df
+
+def add_behaviour_flags(df):
+    print("\nAdding behaviour flags...")
+    df = df.copy()
+    
+    df["same_auction_flag"] = (
+        df.groupby("bidder_id")["auction"]
+        .transform(lambda x: (x == x.shift(1)).astype(int))
+    )
+    
+    df["same_device_flag"] = (
+        df.groupby("bidder_id")["device"]
+        .transform(lambda x: (x == x.shift(1)).astype(int))
+    )
+    
+    df["same_auction_flag"] = df["same_auction_flag"].fillna(0)
+    df["same_device_flag"] = df["same_device_flag"].fillna(0)
+    
+    print(f"Same auction rate: {df['same_auction_flag'].mean():.3f}")
+    print(f"Same device rate:  {df['same_device_flag'].mean():.3f}")
+    return df
+
 def build_sequences(df, max_len=500):
     print("\nBuilding sequences...")
     
-    features = ["time", "device", "country", 
-                "auction", "merchandise"]
+    features = ["time", "time_diff", "device", "country", 
+            "auction", "merchandise",
+            "same_auction_flag", "same_device_flag"]
     
     bidders = df["bidder_id"].unique()
     
@@ -88,6 +120,8 @@ if __name__ == "__main__":
     bids_df = encode_columns(bids_df)
     bids_df = attach_labels(bids_df, train_df)
     bids_df = sort_by_time(bids_df)
+    bids_df = add_time_differences(bids_df)
+    bids_df = add_behaviour_flags(bids_df)
     X, y = build_sequences(bids_df)
     save_sequences(X, y)
     print("\nSequence building complete.")
