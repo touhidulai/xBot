@@ -24,6 +24,7 @@ def attach_labels(bidder_features, train_df):
     final_df = bidder_features.merge(train_df[["bidder_id", "outcome"]],
                                       on="bidder_id",
                                       how="left")
+    final_df = final_df.dropna(subset=["outcome"])
     print(f"Final shape: {final_df.shape}")
     return final_df
 
