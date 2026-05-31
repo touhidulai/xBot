@@ -79,6 +79,7 @@ def add_behaviour_flags(df):
     print(f"Same device rate:  {df['same_device_flag'].mean():.3f}")
     return df
 
+
 def build_sequences(df, max_len=500):
     print("\nBuilding sequences...")
     
@@ -112,6 +113,7 @@ def save_sequences(X, y):
     np.save(os.path.join(output_path, "y_labels.npy"), y)
     print(f"Saved X_sequences.npy: {X.shape}")
     print(f"Saved y_labels.npy:    {y.shape}")
+
 
 if __name__ == "__main__":
     train_df, bids_df = load_data()

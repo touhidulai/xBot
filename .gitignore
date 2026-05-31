@@ -12,6 +12,7 @@ models/
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 
 # Environment variables (secrets)
 .env
@@ -19,3 +20,12 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Docker
+docker-compose.yml
+
+# Logs
+*.log
