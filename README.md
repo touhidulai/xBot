@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # Auction Bot Detector
 
 An end-to-end ML pipeline to detect auction bots
@@ -61,4 +60,4 @@ including what was tried, results, and lessons learned.
 2. Run Stage 1: python src/ingestion/load_data.py
 3. Run Stage 2: python src/validation/validate_data.py
 4. Run Stage 3: python src/processing/sequence_builder.py
-5. Run Stage 4: Open notebooks/auction_bot_detector.ipynb in Colab EOF
+5. Run Stage 4: Open notebooks/auction_bot_detector.ipynb in Colab
